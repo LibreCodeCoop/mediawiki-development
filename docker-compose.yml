@@ -4,30 +4,47 @@ services:
       context: .docker/mediawiki
       args:
         MEDIAWIKI_VERSION: ${MEDIAWIKI_VERSION:-1.41.0}
-    # image: mediawiki:${MEDIAWIKI_VERSION:-1.41.0}
     restart: unless-stopped
     ports:
-      - 80:80
+      - ${HTTP_PORT:-80}:80
     environment:
       HOST_UID: ${HOST_UID:-1000}
       HOST_GID: ${HOST_GID:-1000}
       XDEBUG_CONFIG: ${XDEBUG_CONFIG:-client_host=172.17.0.1 client_port=9003 start_with_request=yes}
       TZ: ${TZ:-CET}
+      WG_SERVER: ${WG_SERVER:-http://localhost}
+      WG_SECRET_KEY: ${WG_SECRET_KEY}
+      WG_UPGRADE_KEY: ${WG_UPGRADE_KEY}
+      WG_DB_TYPE: ${WG_DB_TYPE:-mysql}
+      WG_DB_SERVER: ${WG_DB_SERVER:-database}
+      WG_DB_NAME: ${WG_DB_NAME:-mediawiki}
+      WG_DB_USER: ${WG_DB_USER:-root}
+      WG_DB_PASSWORD: ${WG_DB_PASSWORD:-root}
+      WG_SMTP_HOST: ${WG_SMTP_HOST:-mailhog}
+      WG_SMTP_IDHOST: ${WG_SMTP_IDHOST:-mailhog}
+      WG_SMTP_LOCALHOST: ${WG_SMTP_LOCALHOST:-}
+      WG_SMTP_PORT: ${WG_SMTP_PORT:-1025}
+      WG_SMTP_USERNAME: ${WG_SMTP_USERNAME:-}
+      WG_SMTP_PASSWORD: ${WG_SMTP_PASSWORD:-}
+      WG_SMTP_AUTH: ${WG_SMTP_AUTH:-0}
     volumes:
       - ./volumes/mediawiki:/var/www/mediawiki
+      - ./volumes/src/LocalSettings.php:/var/www/mediawiki/LocalSettings.php
   database:
     image: mariadb:${MARIADB_VERSION:-11.3.2}
     restart: unless-stopped
     ports:
-      - 3306:3306
+      - ${MYSQL_PORT:-3306}:3306
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE:-mediawiki}
-      MYSQL_USER: ${MYSQL_USER:-mediawiki}
+      MYSQL_USER: ${MYSQL_USER:-wikiuser}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-mediawiki}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
       TZ: ${TZ:-CET}
     volumes:
-      - ./volumes/database:/var/lib/mysql
+      - ./volumes/mysql/dump:/docker-entrypoint-initdb.d
+      - ./volumes/mysql/data:/var/lib/mysql
+    command: --max_allowed_packet=32505856
   mailhog:
     image: blueimp/mailhog
     ports:

@@ -1,0 +1,4 @@
+services:
+  mediawiki:
+    volumes:
+      - ./volumes/src/themes:/var/www/mediawiki/themes

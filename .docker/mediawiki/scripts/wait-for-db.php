@@ -1,17 +1,12 @@
 #!/usr/bin/env php
 <?php
-$dbName = 'mysql 🐬';
-
-echo "⌛ Waiting for database $dbName\n";
+echo "⌛ Waiting for database " . getenv('WG_DB_TYPE') ."\n";
 
 function dbIsUp(string $dbName): bool {
     try {
-        if (getenv('DB_HOST') === 'mysql') {
-            $dsn = getenv('DB_HOST') . ':dbname='.getenv('MYSQL_DATABASE').';host='.getenv('DB_HOST');
-            new PDO($dsn, getenv('MYSQL_USER'), getenv('MYSQL_PASSWORD'));
-        } elseif (getenv('DB_HOST') === 'pgsql') {
-            $dsn = getenv('DB_HOST') . ':dbname='.getenv('POSTGRES_DB').';host='.getenv('DB_HOST');
-            new PDO($dsn, getenv('POSTGRES_USER'), getenv('POSTGRES_PASSWORD'));
+        if (getenv('WG_DB_TYPE') === 'mysql') {
+            $dsn = getenv('WG_DB_NAME') . ':dbname='.getenv('MYSQL_DATABASE').';host='.getenv('WG_DB_SERVER');
+            new PDO($dsn, getenv('WG_DB_USER'), getenv('WG_DB_PASSWORD'));
         } else {
             // Will use SQLite
             return true;
@@ -23,8 +18,8 @@ function dbIsUp(string $dbName): bool {
     return true;
 }
 
-while(!dbIsUp($dbName)) {
+while(!dbIsUp(getenv('WG_DB_TYPE'))) {
     sleep(1);
 }
 
-echo "✅ Database $dbName ready\n";
+echo "✅ Database " . getenv('WG_DB_TYPE') . " ready\n";
