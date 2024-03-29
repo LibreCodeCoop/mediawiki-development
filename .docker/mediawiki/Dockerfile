@@ -12,6 +12,7 @@ RUN chmod uga+x /usr/local/bin/install-php-extensions && sync \
     gd \
     memcache \
     memcached \
+    pdo_mysql \
     xdebug \
     && rm /usr/local/bin/install-php-extensions \
     # pevent errors when try to create files at /var/www with user www-data
