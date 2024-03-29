@@ -29,7 +29,6 @@ services:
       WG_SMTP_AUTH: ${WG_SMTP_AUTH:-0}
     volumes:
       - ./volumes/mediawiki:/var/www/mediawiki
-      - ./volumes/src/LocalSettings.php:/var/www/mediawiki/LocalSettings.php
   database:
     image: mariadb:${MARIADB_VERSION:-11.3.2}
     restart: unless-stopped
