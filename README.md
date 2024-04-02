@@ -10,16 +10,17 @@ Example:
 ```bash
 git clone https://github.com/youroganization/repositoryname volumes/src
 ```
-To each file that you want to override from your project into mediawiki, you will need to create a specific volume into the file `docker-compose.override.yml`. By example:
+To each file that you want to override from your project into mediawiki, you will need to put inside folder volumes/src/mediawiki and run the follow command:
 
-docker-compose.override.yml
 ```yaml
-services:
-  mediawiki:
-    volumes:
-      - ./volumes/src/themes:/var/www/mediawiki/themes
+docker compose exec mediawiki php /var/www/scripts/init.php
 ```
 Clone the MediaWiki project source, or put your existing mediawiki folder, into `volumes/mediawiki`
+
+Example:
+```bash
+git clone  --progress --single-branch --depth 1 --branch 1.41.0 --recurse-submodules -j 4 https://gerrit.wikimedia.org/r/mediawiki/core.git volumes/mediawiki
+```
 
 Check if you will need to change any default environment value at `docker.compose.yml` and if you need to change, create a `.env` file with the custom environments values.
 
