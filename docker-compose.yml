@@ -47,6 +47,9 @@ services:
       - ./volumes/mysql/dump:/docker-entrypoint-initdb.d
       - ./volumes/mysql/data:/var/lib/mysql
     command: --max_allowed_packet=32505856
+  memcached:
+    image: memcached:1.6-alpine
+    restart: unless-stopped
   mailhog:
     image: blueimp/mailhog
     ports:
